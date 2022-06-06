@@ -1,0 +1,6 @@
+/target
+/quickwit
+/qwdata
+
+*.yaml
+*.json
