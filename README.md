@@ -12,6 +12,9 @@ The project will clone quickwit, compile it and use the provided `build_index.to
 Output of the runs will be stored in `db.json`, which is a list of json serialized`BuildIndexResult`.
 
 
+### CLI Help
+
+
 ```
 ➜  track_index_size git:(master) cargo run --release -- --help
    Compiling track_index_size v0.1.0 (/home/pascal/LinuxData/Development/track_index_size)
