@@ -1,0 +1,1 @@
+{"index_id":"hdfs","indexing_time_ms":222057,"index_size_in_bytes":3599792095,"input_size_in_bytes":14324554580,"compression_ratio":0.2513022,"throughput_mbs":64.50836,"split_info":{"num_splits":6},"commit_hash":"52e8652\n","run_date_ts":1654577509,"run_date":"2022-06-07 04:51:49.040646685 UTC","machine_name":"G513"}

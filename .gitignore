@@ -3,3 +3,5 @@
 /qwdata
 
 *.json
+
+!db.json
