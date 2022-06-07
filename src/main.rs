@@ -17,14 +17,14 @@ use crate::{
 #[derive(FromArgs)]
 /// Options to configure a run.
 struct Options {
-    /// skip quickwit installation
-    #[argh(option)]
-    skip_quickwit_install: Option<bool>,
+    /// skip quickwit installation. Defaults to false.
+    #[argh(option, default = "false")]
+    skip_quickwit_install: bool,
 
     /// the path to the config to build indices. See `BuildIndicesConfig` for parameters.
     /// Defaults to `build_index.toml`.
-    #[argh(option)]
-    build_indices_config_path: Option<PathBuf>,
+    #[argh(option, default = "PathBuf::from(\"build_index.toml\")")]
+    build_indices_config_path: PathBuf,
 
     /// optional quickwit_commit_hash to checkout after cloning.
     #[argh(option)]
@@ -38,7 +38,7 @@ struct Options {
 fn main() -> std::io::Result<()> {
     let opt: Options = argh::from_env();
 
-    if !opt.skip_quickwit_install.unwrap_or(false) {
+    if !opt.skip_quickwit_install {
         get_and_compile_quickwit(opt.quickwit_commit_hash)?;
         let quickwit = Path::new("../");
         assert!(env::set_current_dir(&quickwit).is_ok());

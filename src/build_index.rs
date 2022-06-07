@@ -26,6 +26,7 @@ pub struct BuildIndexResult {
     run_date_ts: i64,
     run_date: String,
     machine_name: String,
+    rustc_version: String,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -46,17 +47,27 @@ struct IndexConfig {
     index_id: String,
 }
 
+fn get_rustc_version() -> String {
+    let output = Command::new("rustc")
+        .args(["--version"])
+        .output()
+        .expect("failed to execute process");
+
+    String::from_utf8_lossy(&output.stdout).to_string()
+}
+
 pub fn build_index_and_get_size(
-    build_indices_config_path: Option<PathBuf>,
+    build_indices_config_path: PathBuf,
     machine_name: &str,
     commit_hash: &str,
 ) -> std::io::Result<()> {
-    let path = build_indices_config_path.unwrap_or("build_index.toml".into());
-
-    let config: BuildIndicesConfig = toml::from_str(&fs::read_to_string(path)?).unwrap();
+    let config: BuildIndicesConfig =
+        toml::from_str(&fs::read_to_string(build_indices_config_path)?).unwrap();
 
     let qw_data_path = "./qwdata";
     let qw_data_index_path = format!("{}/indexes", qw_data_path);
+
+    let rustc_version = get_rustc_version();
 
     if !Path::new(qw_data_path).exists() {
         fs::create_dir(qw_data_path)?;
@@ -130,6 +141,7 @@ pub fn build_index_and_get_size(
             run_date: run_date.to_string(),
             split_info,
             machine_name: machine_name.to_string(),
+            rustc_version: rustc_version.to_string(),
         };
 
         build_index_results.push(build_index_result);
@@ -139,6 +151,7 @@ pub fn build_index_and_get_size(
         OpenOptions::new()
             .write(true)
             .create(true)
+            .append(true)
             .open("db.json")?,
     );
 
