@@ -1,0 +1,31 @@
+version: 0 # File format version.
+
+index_id: "hdfs"
+
+doc_mapping:
+  field_mappings:
+    - name: timestamp
+      type: i64
+      fast: true
+    - name: severity_text
+      type: text
+      tokenizer: raw
+    - name: body
+      type: text
+      tokenizer: default
+      record: position
+    - name: resource
+      type: object
+      field_mappings:
+        - name: service
+          type: text
+          tokenizer: raw
+  tag_fields: ["resource.service"]
+
+indexing_settings:
+  timestamp_field: timestamp
+
+search_settings:
+  default_search_fields: [severity_text, body]
+
+

@@ -28,6 +28,10 @@ struct Options {
     /// the quickwit_commit_hash to checkout and build
     #[argh(option)]
     quickwit_commit_hash: Option<String>,
+
+    /// the machine name, in case there are multiple machine executing into the same db
+    #[argh(option)]
+    machine_name: String,
 }
 
 fn main() -> std::io::Result<()> {
@@ -39,7 +43,20 @@ fn main() -> std::io::Result<()> {
         assert!(env::set_current_dir(&quickwit).is_ok());
     }
 
-    build_index_and_get_size(opt.build_indices_config_path)?;
+    let output = Command::new("git")
+        .current_dir("quickwit")
+        .args(["rev-parse", "--short", "HEAD"])
+        .output()
+        .expect("failed to execute process");
+
+    let commit_hash = String::from_utf8(output.stdout)
+        .expect("could not parse command output for get git commit hash");
+
+    build_index_and_get_size(
+        opt.build_indices_config_path,
+        &opt.machine_name,
+        &commit_hash,
+    )?;
 
     Ok(())
 }
@@ -61,7 +78,6 @@ fn get_and_compile_quickwit(quickwit_commit_hash: Option<String>) -> std::io::Re
 
     if let Some(commit_hash) = quickwit_commit_hash {
         let output = Command::new("git")
-            //.current_dir("./quickwit")
             .args(["reset", "--hard", &commit_hash])
             .output()
             .expect("failed to execute process");
