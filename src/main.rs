@@ -15,21 +15,22 @@ use crate::{
 };
 
 #[derive(FromArgs)]
-/// Reach new heights.
+/// Options to configure a run.
 struct Options {
     /// skip quickwit installation
     #[argh(option)]
     skip_quickwit_install: Option<bool>,
 
-    /// the path to the config to build indices
+    /// the path to the config to build indices. See `BuildIndicesConfig` for parameters.
+    /// Defaults to `build_index.toml`.
     #[argh(option)]
     build_indices_config_path: Option<PathBuf>,
 
-    /// the quickwit_commit_hash to checkout and build
+    /// optional quickwit_commit_hash to checkout after cloning.
     #[argh(option)]
     quickwit_commit_hash: Option<String>,
 
-    /// the machine name, in case there are multiple machine executing into the same db
+    /// the machine name. To differentiate different runners committing into the same db.json.
     #[argh(option)]
     machine_name: String,
 }
