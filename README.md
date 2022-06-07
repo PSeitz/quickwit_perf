@@ -6,3 +6,7 @@ The project will clone quickwit, compile it and use the provided `build_index.to
 `cargo run --release -- --machine-name G513`
 
 `cargo run --release -- --skip-quickwit-install true --machine-name G513`
+
+
+### Results
+Output of the runs will be stored in `db.json`, which is a list of json serialized`BuildIndexResult`.
