@@ -1,11 +1,35 @@
-# qw_build_index
-Build an quickwit index and track some statistics about it.
+# Quickwit Build Index
 
-The project will clone quickwit, compile it and use the provided `build_index.toml` to build some indices.
+Tool to build quickwit indices, record some stats and put them into a file database `db.json`.
 
-`cargo run --release -- --machine-name G513`
+### How to use
 
-`cargo run --release -- --skip-quickwit-install true --machine-name G513`
+
+1. Configure `build_index.toml`, which contains path to the data, path to the config, and _optionally_ an name:
+
+The name or as fallback the index_id is used as "index_id" in the result stored in db.json.
+
+```toml
+[[indices]]
+data_path = 'hdfs-log.json'
+index_config = 'hdfs_index_config.yaml'
+name = 'hdfs'
+```
+
+
+2. 
+The tool will clone and compile quickwit. This can be skipped.
+
+Examples:
+```
+cargo run --release -- --machine-name c5n.2xlarge
+
+cargo run --release -- --machine-name c5n.2xlarge --quickwit-commit-hash 5e200a3
+
+cargo run --release -- --skip-quickwit-install --machine-name c5n.2xlarge
+```
+
+3. The compiled quickwit binary will be used to create the indices, gather some data. The results are appended to `db.json`.
 
 
 ### Results

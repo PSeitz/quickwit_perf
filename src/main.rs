@@ -18,7 +18,7 @@ use crate::{
 /// Options to configure a run.
 struct Options {
     /// skip quickwit installation. Defaults to false.
-    #[argh(option, default = "false")]
+    #[argh(switch)]
     skip_quickwit_install: bool,
 
     /// the path to the config to build indices. See `BuildIndicesConfig` for parameters.
@@ -51,7 +51,9 @@ fn main() -> std::io::Result<()> {
         .expect("failed to execute process");
 
     let commit_hash = String::from_utf8(output.stdout)
-        .expect("could not parse command output for get git commit hash");
+        .expect("could not parse command output for get git commit hash")
+        .trim()
+        .to_string();
 
     build_index_and_get_size(
         opt.build_indices_config_path,

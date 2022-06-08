@@ -12,21 +12,28 @@ use fs_extra::dir::get_size;
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct BuildIndexResult {
-    index_id: String,
-    indexing_time_ms: u64,
-    index_size_in_bytes: u64,
-    input_size_in_bytes: u64,
-    // The input size, vs the total output size, with all indices. TODO: Only compare docstore
-    compression_ratio: f32,
-    throughput_mbs: f32,
-    // TODO add sizes of fast field docstore etc.
-    split_info: SplitDetails,
+struct RunInfo {
     commit_hash: String,
     run_date_ts: i64,
     run_date: String,
     machine_name: String,
     rustc_version: String,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct BuildIndexResult {
+    index_id: String,
+    indexing_time_ms: u64,
+    index_size_kb: u64,
+    input_size_kb: u64,
+    // The input size, vs the total output size, with all indices.
+    // TODO: Add compression_ratio only for docstore
+    compression_ratio: f32,
+    throughput_mbs: f32,
+    // TODO add sizes of fast field docstore etc.
+    split_info: SplitDetails,
+    #[serde(flatten)]
+    run_info: RunInfo,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -53,7 +60,7 @@ fn get_rustc_version() -> String {
         .output()
         .expect("failed to execute process");
 
-    String::from_utf8_lossy(&output.stdout).to_string()
+    String::from_utf8_lossy(&output.stdout).trim().to_string()
 }
 
 pub fn build_index_and_get_size(
@@ -76,6 +83,14 @@ pub fn build_index_and_get_size(
     let qw_binary = "./quickwit/target/release/quickwit";
 
     let run_date: DateTime<Utc> = Utc::now();
+
+    let run_info = RunInfo {
+        commit_hash: commit_hash.to_string(),
+        run_date_ts: run_date.timestamp(),
+        run_date: run_date.to_string(),
+        machine_name: machine_name.to_string(),
+        rustc_version: rustc_version.to_string(),
+    };
 
     let mut build_index_results = vec![];
 
@@ -132,16 +147,12 @@ pub fn build_index_and_get_size(
         let build_index_result = BuildIndexResult {
             index_id: build_index_config.name.unwrap_or(index_config.index_id),
             indexing_time_ms: duration.as_millis() as u64,
-            index_size_in_bytes: index_size,
-            input_size_in_bytes: input_size,
+            index_size_kb: index_size / 1_000,
+            input_size_kb: input_size / 1_000,
             compression_ratio: index_size as f32 / input_size as f32,
             throughput_mbs: (input_size as f32) / 1_000_000.0 / duration.as_secs_f32(),
-            commit_hash: commit_hash.to_string(),
-            run_date_ts: run_date.timestamp(),
-            run_date: run_date.to_string(),
             split_info,
-            machine_name: machine_name.to_string(),
-            rustc_version: rustc_version.to_string(),
+            run_info: run_info.clone(),
         };
 
         build_index_results.push(build_index_result);
