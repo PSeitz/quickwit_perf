@@ -128,6 +128,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "quickwit_build_index"
+version = "0.1.0"
+dependencies = [
+ "argh",
+ "chrono",
+ "fs_extra",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+ "toml",
+]
+
+[[package]]
 name = "quote"
 version = "1.0.18"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -214,19 +227,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8d82e1a7758622a465f8cee077614c73484dac5b836c02ff6a40d5d1010324d7"
 dependencies = [
  "serde",
-]
-
-[[package]]
-name = "track_index_size"
-version = "0.1.0"
-dependencies = [
- "argh",
- "chrono",
- "fs_extra",
- "serde",
- "serde_json",
- "serde_yaml",
- "toml",
 ]
 
 [[package]]

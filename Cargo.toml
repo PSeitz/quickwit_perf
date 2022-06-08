@@ -1,5 +1,5 @@
 [package]
-name = "track_index_size"
+name = "quickwit_build_index"
 version = "0.1.0"
 edition = "2021"
 

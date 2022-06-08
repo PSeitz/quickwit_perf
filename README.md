@@ -33,7 +33,7 @@ cargo run --release -- --skip-quickwit-install --machine-name c5n.2xlarge
 
 
 ### Results
-Output of the runs will be stored in `db.json`, which is a list of json serialized`BuildIndexResult`.
+Output of the runs will be stored in `db.json`, which is a list of json serialized `BuildIndexResult`.
 
 
 ### CLI Help

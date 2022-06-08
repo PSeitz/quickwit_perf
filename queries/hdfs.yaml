@@ -1,0 +1,17 @@
+
+queries:
+  - severity_text:INFO
+  - name: "Query: Info, agg on timestamp"
+    query: {
+      "query": "INFO",
+      "max_hits": 10,
+      "aggregations": {
+        "timestamp_blocks": {
+          "range": {
+            "field": "timestamp",
+            "ranges": [ { "to": 1500059649 }, { "from": 1500059649, "to": 1501159649 }, { "from": 1501159649 } ] },
+          "aggs": { "average_in_range": { "avg": { "field": "timestamp" } } }
+        }
+      }
+    }
+

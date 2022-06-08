@@ -1,4 +1,4 @@
 [[indices]]
 data_path = 'hdfs-log.json'
-index_config = 'hdfs_index_config.yaml'
+index_config = 'index_configs/hdfs_index_config.yaml'
 
